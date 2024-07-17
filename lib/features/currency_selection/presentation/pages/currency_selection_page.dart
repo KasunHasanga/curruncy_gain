@@ -123,14 +123,15 @@ class _DashboardPageState extends State<CurrencySelectionPage> {
                 itemCount: filteredCountryList.length,
                 separatorBuilder: (context, index) {
                   return Divider(
-                    color: Theme.of(context).colorScheme.onBackground.withOpacity(0.1),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onBackground
+                        .withOpacity(0.1),
                     endIndent: 30,
                     indent: 20,
                   );
                 },
                 itemBuilder: (context, index) {
-                  String countryCode = filteredCountryList[index].iso3Code!;
-                  String countryName = filteredCountryList[index].name!;
                   bool isSelected = selectedItems.contains(index);
 
                   return ListTile(
@@ -142,7 +143,7 @@ class _DashboardPageState extends State<CurrencySelectionPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          countryCode,
+                          filteredCountryList[index].currencyCode!,
                           style: AppFonts.styleWithGilroyMediumText(
                               color: Theme.of(context).colorScheme.onBackground,
                               fSize: FontSizeValue.fontSize16),
@@ -152,9 +153,10 @@ class _DashboardPageState extends State<CurrencySelectionPage> {
                         ),
                         Flexible(
                           child: Text(
-                            countryName,
+                            filteredCountryList[index].name!,
                             style: AppFonts.styleWithGilroyMediumText(
-                                color: Theme.of(context).colorScheme.onBackground,
+                                color:
+                                    Theme.of(context).colorScheme.onBackground,
                                 fSize: FontSizeValue.fontSize16),
                           ),
                         ),

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:currency_grain/common_widget/drawer_widget.dart';
 import 'package:currency_grain/config/colors.dart';
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -30,19 +30,27 @@ class _DashboardPageState extends State<DashboardPage> {
   final globalKey = GlobalKey<ScaffoldState>();
   Clinet client = Clinet();
 
-  TextEditingController currencyConverterController01 = TextEditingController();
-  TextEditingController currencyConverterController02 = TextEditingController();
-
-  ExchangeRateResponseModel exchangeRateResponse =
-      ExchangeRateResponseModel(info: Info(rate: 0.0));
-
-  Country currency01 = countryList[10];
-  Country currency02 = countryList[5];
+  List<CurrencyConverterData> currencyConverters = [
+    CurrencyConverterData(
+      currency01: countryList[10],
+      currency02: countryList[5],
+      currencyConverterController01: TextEditingController(),
+      currencyConverterController02: TextEditingController(),
+    ),
+    CurrencyConverterData(
+      currency01: countryList[10],
+      currency02: countryList[5],
+      currencyConverterController01: TextEditingController(),
+      currencyConverterController02: TextEditingController(),
+    ),
+  ];
 
   @override
   void dispose() {
-    currencyConverterController01.dispose();
-    currencyConverterController02.dispose();
+    for (var converter in currencyConverters) {
+      converter.currencyConverterController01.dispose();
+      converter.currencyConverterController02.dispose();
+    }
     super.dispose();
   }
 
@@ -57,10 +65,13 @@ class _DashboardPageState extends State<DashboardPage> {
     super.initState();
   }
 
-  void getExchangeRates(
-      {required GlobalKey<ScaffoldState> scaffoldKey,
-      required TextEditingController secondaryController,
-      required double amount}) async {
+  void getExchangeRates({
+    required GlobalKey<ScaffoldState> scaffoldKey,
+    required TextEditingController secondaryController,
+    required double amount,
+    required Country currency01,
+    required Country currency02,
+  }) async {
     try {
       String fromCurrency = currency01.currencyCode!;
       String toCurrency = currency02.currencyCode!;
@@ -69,13 +80,15 @@ class _DashboardPageState extends State<DashboardPage> {
           "$baseUrl?to=$toCurrency&from=$fromCurrency&amount=$amount",
           query: {"apikey": "I4Q3VVqJsLla3FcY9GsSZ1cm5K2e3Qlb"},
           scaffoldKey: scaffoldKey);
-      exchangeRateResponse =
+      var exchangeRateResponse =
           ExchangeRateResponseModel.fromJson(jsonDecode(response.toString()));
       setState(() {
         secondaryController.text =
             exchangeRateResponse.result?.toStringAsFixed(2) ?? "";
       });
-      print(response);
+      if (kDebugMode) {
+        print(response);
+      }
     } on DioException catch (ex) {
       String errorMessage = json.decode(ex.response.toString())["errorMessage"];
       throw Exception(errorMessage);
@@ -111,63 +124,127 @@ class _DashboardPageState extends State<DashboardPage> {
         margin: const EdgeInsets.only(top: 20),
         padding: const EdgeInsets.all(20),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              "INSERT AMOUNT :",
-              style: AppFonts.styleWithGilroyMediumText(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .onBackground
-                      .withOpacity(0.5),
-                  fSize: FontSizeValue.fontSize14,
-                  fontWeight: FontWeight.w400),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            currencyInputBlock(
-                countryCode: currency01.iso3Code!,
-                isoCode: currency01.isoCode!,
-                countryName: currency01.iso3Code!,
-                primaryTextEditingController: currencyConverterController01,
-                isFirstBlock: true,
-                secondaryTextEditingController: currencyConverterController02),
-            const SizedBox(
-              height: 20,
-            ),
-            Text(
-              "CONVERT TO :",
-              style: AppFonts.styleWithGilroyMediumText(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .onBackground
-                      .withOpacity(0.5),
-                  fSize: FontSizeValue.fontSize14,
-                  fontWeight: FontWeight.w400),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            currencyInputBlock(
-                countryCode: currency02.iso3Code!,
-                countryName: currency02.iso3Code!,
-                isoCode: currency02.isoCode!,
-                primaryTextEditingController: currencyConverterController02,
-                secondaryTextEditingController: currencyConverterController01),
-            const SizedBox(
-              height: 32,
+            Expanded(
+              child: ListView.builder(
+                itemCount: currencyConverters.length,
+                itemBuilder: (context, index) {
+                  var converter = currencyConverters[index];
+                  return Stack(
+                    children: [
+                      index > 0
+                          ? Positioned(
+                              right: 10,
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    currencyConverters.removeAt(index);
+                                  });
+                                },
+                                child: Container(
+                                  width: 30,
+                                  height: 30,
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onBackground
+                                        .withOpacity(0.5),
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Center(
+                                    child: Icon(
+                                      Icons.close,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onBackground,
+                                    ),
+                                  ),
+                                ),
+                              ))
+                          : Container(),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "INSERT AMOUNT :",
+                            style: AppFonts.styleWithGilroyMediumText(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onBackground
+                                    .withOpacity(0.5),
+                                fSize: FontSizeValue.fontSize14,
+                                fontWeight: FontWeight.w400),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          currencyInputBlock(
+                            countryCode: converter.currency01.currencyCode!,
+                            isoCode: converter.currency01.isoCode!,
+                            countryName: converter.currency01.iso3Code!,
+                            primaryTextEditingController:
+                                converter.currencyConverterController01,
+                            isFirstBlock: true,
+                            secondaryTextEditingController:
+                                converter.currencyConverterController02,
+                            currency01: converter.currency01,
+                            currency02: converter.currency02,
+                            index: index,
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Text(
+                            "CONVERT TO :",
+                            style: AppFonts.styleWithGilroyMediumText(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onBackground
+                                    .withOpacity(0.5),
+                                fSize: FontSizeValue.fontSize14,
+                                fontWeight: FontWeight.w400),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          currencyInputBlock(
+                            countryCode: converter.currency02.currencyCode!,
+                            countryName: converter.currency02.iso3Code!,
+                            isoCode: converter.currency02.isoCode!,
+                            primaryTextEditingController:
+                                converter.currencyConverterController02,
+                            secondaryTextEditingController:
+                                converter.currencyConverterController01,
+                            currency01: converter.currency01,
+                            currency02: converter.currency02,
+                            index: index,
+                          ),
+                          const SizedBox(
+                            height: 32,
+                          ),
+                        ],
+                      ),
+                    ],
+                  );
+                },
+              ),
             ),
             Center(
               child: ElevatedButton.icon(
                 style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(
-                        AppColors.kLightGreen.withOpacity(0.4))),
-                onPressed: (){
-
+                        AppColors.kLightGreen.withOpacity(0.2))),
+                onPressed: () {
+                  setState(() {
+                    currencyConverters.add(CurrencyConverterData(
+                      currency01: countryList[10],
+                      currency02: countryList[5],
+                      currencyConverterController01: TextEditingController(),
+                      currencyConverterController02: TextEditingController(),
+                    ));
+                  });
                 },
-                icon: Icon(Icons.add, color: AppColors.kLightGreen),
+                icon: const Icon(Icons.add, color: AppColors.kLightGreen),
                 label: Text(
                   "ADD CONVERTER",
                   style: AppFonts.styleWithGilroyMediumText(
@@ -190,6 +267,9 @@ class _DashboardPageState extends State<DashboardPage> {
     bool isFirstBlock = false,
     required TextEditingController primaryTextEditingController,
     required TextEditingController secondaryTextEditingController,
+    required Country currency01,
+    required Country currency02,
+    required int index,
   }) {
     return Container(
       decoration: BoxDecoration(
@@ -201,20 +281,17 @@ class _DashboardPageState extends State<DashboardPage> {
         children: [
           AppTextField(
             suffixIcon: GestureDetector(
-              // behavior: HitTestBehavior.opaque,
               onTap: () async {
                 var result =
                     await Get.toNamed(CurrencySelectionPage.routeName) ?? "";
                 if (result != "") {
-                  if (isFirstBlock) {
-                    setState(() {
-                      currency01 = result;
-                    });
-                  } else {
-                    setState(() {
-                      currency02 = result;
-                    });
-                  }
+                  setState(() {
+                    if (isFirstBlock) {
+                      currencyConverters[index].currency01 = result;
+                    } else {
+                      currencyConverters[index].currency02 = result;
+                    }
+                  });
                 }
               },
               child: Container(
@@ -229,7 +306,6 @@ class _DashboardPageState extends State<DashboardPage> {
                       child: Image.asset(
                         "assets/contries/${isoCode.toLowerCase()}.png",
                         width: 35,
-                        // height: 25,
                       ),
                     ),
                     const SizedBox(
@@ -252,27 +328,45 @@ class _DashboardPageState extends State<DashboardPage> {
             ),
             textController: primaryTextEditingController,
             labelText: ''.tr,
-
             labelColor: Theme.of(context).colorScheme.onBackground,
             textColor: Theme.of(context).colorScheme.onBackground,
             inputFormatter: FilteringTextInputFormatter.digitsOnly,
             keyBoardType: TextInputType.number,
-            // isEnabled: isFirstBlock,
+            onChanged: (str) {
+              getExchangeRates(
+                scaffoldKey: globalKey,
+                amount: double.parse(primaryTextEditingController.text),
+                secondaryController: secondaryTextEditingController,
+                currency01: currency01,
+                currency02: currency02,
+              );
+            },
             onFieldSubmitted: (str) {
               getExchangeRates(
-                  scaffoldKey: globalKey,
-                  amount: double.parse(primaryTextEditingController.text),
-                  secondaryController: secondaryTextEditingController);
+                scaffoldKey: globalKey,
+                amount: double.parse(primaryTextEditingController.text),
+                secondaryController: secondaryTextEditingController,
+                currency01: currency01,
+                currency02: currency02,
+              );
             },
-            // onChanged: (str){
-            //   getExchangeRates(scaffoldKey: globalKey,secondaryController: secondaryTextEditingController);
-            //   // setState(() {
-            //   //   secondaryTextEditingController.text=str;
-            //   // });
-            // },
           ),
         ],
       ),
     );
   }
+}
+
+class CurrencyConverterData {
+  Country currency01;
+  Country currency02;
+  TextEditingController currencyConverterController01;
+  TextEditingController currencyConverterController02;
+
+  CurrencyConverterData({
+    required this.currency01,
+    required this.currency02,
+    required this.currencyConverterController01,
+    required this.currencyConverterController02,
+  });
 }
