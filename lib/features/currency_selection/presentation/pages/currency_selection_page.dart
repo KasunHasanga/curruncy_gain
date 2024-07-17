@@ -192,6 +192,9 @@ class _DashboardPageState extends State<CurrencySelectionPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: Theme.of(context).colorScheme.onBackground,
+        ),
         flexibleSpace: Container(
           decoration:  BoxDecoration(
             color: Theme.of(context).colorScheme.background,
