@@ -57,6 +57,7 @@ dev_dependencies:
   get_it: ^7.2.0
   http: ^1.0.0
   dio: ^5.1.1
+  url_launcher: ^6.3.0
   flutter_native_splash: ^2.2.17
 
 
