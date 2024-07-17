@@ -2,18 +2,17 @@ import 'dart:convert';
 
 import 'package:currency_grain/config/colors.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart';
 import '../../../../common_widget/app_text_field.dart';
-import '../../../../config/bank_images.dart';
 import '../../../../config/constants.dart';
 import '../../../../config/fonts.dart';
 import '../../../../config/theme/theme_service.dart';
 import '../../../../core/network/client.dart';
 import '../../../currency_selection/presentation/pages/currency_selection_page.dart';
+import '../../model/contry_model.dart';
 import '../../model/exchangeRateResponseModel.dart';
 import '../controller/dashboard_controller.dart';
 
@@ -36,14 +35,21 @@ class _DashboardPageState extends State<DashboardPage> {
   ExchangeRateResponseModel exchangeRateResponse =
       ExchangeRateResponseModel(info: Info(rate: 0.0));
 
-  Map<String, String> currency01 = {
-    "countryCode": "USD",
-    "countryName": "United States Dollar"
-  };
-  Map<String, String> currency02 = {
-    "countryCode": "LKR",
-    "countryName": "Sri Lankan Rupee"
-  };
+  // Map<String, String> currency01 = {
+  //   "countryCode": "USD",
+  //   "countryName": "United States Dollar"
+  // };
+  // Map<String, String> currency02 = {
+  //   "countryCode": "LKR",
+  //   "countryName": "Sri Lankan Rupee"
+  // };
+
+  Country currency01 = countryList[10];
+  Country currency02 = countryList[5];
+  // Map<String, String> currency02 = {
+  //   "countryCode": "LKR",
+  //   "countryName": "Sri Lankan Rupee"
+  // };
 
   @override
   void dispose() {
@@ -76,8 +82,8 @@ class _DashboardPageState extends State<DashboardPage> {
     print('q111111111');
     // Future<Map<String, dynamic>>
     try {
-      String fromCurrency = currency01["countryCode"]!;
-      String toCurrency = currency02["countryCode"]!;
+      String fromCurrency = currency01.currencyCode!;
+      String toCurrency = currency02.currencyCode!;
       // double amount = 100;
       String baseUrl = "https://api.apilayer.com/exchangerates_data/convert";
       var response = await client.get(
@@ -106,9 +112,12 @@ class _DashboardPageState extends State<DashboardPage> {
       //   onPressed: () => getExchangeRates(scaffoldKey: globalKey),
       // ),
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: Theme.of(context).colorScheme.onBackground,
+        ),
         flexibleSpace: Container(
-          decoration:  BoxDecoration(
-       color: Theme.of(context).colorScheme.background,
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.background,
           ),
         ),
         centerTitle: true,
@@ -127,8 +136,7 @@ class _DashboardPageState extends State<DashboardPage> {
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: BoxDecoration(
-                   gradient: AppColors.appbarGradient),
+              decoration: BoxDecoration(gradient: AppColors.appbarGradient),
               child: Text(
                 'kasun Hasanga',
                 style: AppFonts.styleWithGilroyMediumText(
@@ -177,26 +185,19 @@ class _DashboardPageState extends State<DashboardPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             currencyInputBlock(
-                countryCode: currency01["countryCode"]!,
-                countryName: currency01["countryName"]!,
+                countryCode: currency01.iso3Code!,
+                isoCode: currency01.isoCode!,
+                countryName: currency01.iso3Code!,
                 primaryTextEditingController: currencyConverterController01,
                 isFirstBlock: true,
                 secondaryTextEditingController: currencyConverterController02),
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 10, bottom: 10),
-                child: SizedBox(
-                  width: 44,
-                  height: 44,
-                  child: Image(
-                    image: AssetImage(AllImages().currencyExchangeImg),
-                  ),
-                ),
-              ),
+            const SizedBox(
+              height: 20,
             ),
             currencyInputBlock(
-                countryCode: currency02["countryCode"]!,
-                countryName: currency02["countryName"]!,
+                countryCode: currency02.iso3Code!,
+                countryName: currency02.iso3Code!,
+                isoCode: currency02.isoCode!,
                 primaryTextEditingController: currencyConverterController02,
                 secondaryTextEditingController: currencyConverterController01),
             const SizedBox(
@@ -204,19 +205,22 @@ class _DashboardPageState extends State<DashboardPage> {
             ),
             Text(
               "Indicative Exchange Rate",
-              style:  AppFonts.styleWithGilroyMediumText(
+              style: AppFonts.styleWithGilroyMediumText(
                   color: Theme.of(context).colorScheme.onBackground,
                   fSize: FontSizeValue.fontSize16),
             ),
             const SizedBox(
               height: 12,
             ),
-            Text(
-              "1 ${currency01["countryCode"]!} = ${exchangeRateResponse.info!.rate?.toStringAsFixed(2) ?? ""} ${currency02["countryCode"]!}",
-              style:  AppFonts.styleWithGilroyMediumText(
-                  color: Theme.of(context).colorScheme.onBackground.withOpacity(0.7),
-                  fSize: FontSizeValue.fontSize16),
-            ),
+            // Text(
+            //   "1 ${currency01["countryCode"]!} = ${exchangeRateResponse.info!.rate?.toStringAsFixed(2) ?? ""} ${currency02["countryCode"]!}",
+            //   style: AppFonts.styleWithGilroyMediumText(
+            //       color: Theme.of(context)
+            //           .colorScheme
+            //           .onBackground
+            //           .withOpacity(0.7),
+            //       fSize: FontSizeValue.fontSize16),
+            // ),
           ],
         ),
       ),
@@ -225,62 +229,91 @@ class _DashboardPageState extends State<DashboardPage> {
 
   Widget currencyInputBlock({
     required String countryName,
+    required String isoCode,
     required countryCode,
     bool isFirstBlock = false,
     required TextEditingController primaryTextEditingController,
     required TextEditingController secondaryTextEditingController,
   }) {
     return Container(
-      decoration:  BoxDecoration(
+      decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.background,
-          borderRadius: BorderRadius.all(Radius.circular(10))),
+          borderRadius: const BorderRadius.all(Radius.circular(10))),
       padding: const EdgeInsets.fromLTRB(13, 17, 13, 18),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () async {
-              var result =
-                  await Get.toNamed(CurrencySelectionPage.routeName) ?? "";
-              print(result);
-              if (result != "") {
-                if (isFirstBlock) {
-                  setState(() {
-                    currency01 = result;
-                  });
-                } else {
-                  setState(() {
-                    currency02 = result;
-                  });
-                }
-              }
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  countryName,
-                  style: AppFonts.styleWithGilroyMediumText(
-                      color:Theme.of(context).colorScheme.onBackground,
-                      fSize: FontSizeValue.fontSize16,
-                      fontWeight: FontWeight.w400),
-                ),
-                 Icon(
-                  Icons.arrow_right_sharp,
-                  color: Theme.of(context).colorScheme.onBackground,
-                )
-              ],
-            ),
+          Text(
+            isFirstBlock ? "INSERT AMOUNT :" : "CONVERT TO :",
+            style: AppFonts.styleWithGilroyMediumText(
+                color:
+                    Theme.of(context).colorScheme.onBackground.withOpacity(0.5),
+                fSize: FontSizeValue.fontSize14,
+                fontWeight: FontWeight.w400),
           ),
-          const SizedBox(height: 10,),
+          const SizedBox(
+            height: 10,
+          ),
           AppTextField(
+            suffixIcon: GestureDetector(
+              // behavior: HitTestBehavior.opaque,
+              onTap: () async {
+                var result =
+                    await Get.toNamed(CurrencySelectionPage.routeName) ?? "";
+                print(result.toString() + isFirstBlock.toString());
+                if (result != "") {
+                  if (isFirstBlock) {
+                    setState(() {
+                      currency01 = result;
+                    });
+                  } else {
+                    setState(() {
+                      currency02 = result;
+                    });
+                  }
+                }
+              },
+              child: Container(
+                width: 130,
+                height: 50,
+                padding: EdgeInsets.only(right: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(100.0),
+                      child: Image.asset(
+                        "assets/contries/${isoCode.toLowerCase()}.png",
+                        width: 35,
+                        // height: 25,
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      countryCode,
+                      style: AppFonts.styleWithGilroyMediumText(
+                          color: Theme.of(context).colorScheme.onBackground,
+                          fSize: FontSizeValue.fontSize16,
+                          fontWeight: FontWeight.w400),
+                    ),
+                    Icon(
+                      Icons.keyboard_arrow_down,
+                      color: Theme.of(context).colorScheme.onBackground,
+                    )
+                  ],
+                ),
+              ),
+            ),
             textController: primaryTextEditingController,
             labelText: ''.tr,
-            labelColor:  Theme.of(context).colorScheme.onBackground,
-            textColor:  Theme.of(context).colorScheme.onBackground,
+
+            labelColor: Theme.of(context).colorScheme.onBackground,
+            textColor: Theme.of(context).colorScheme.onBackground,
             inputFormatter: FilteringTextInputFormatter.digitsOnly,
             keyBoardType: TextInputType.number,
-
+            // isEnabled: isFirstBlock,
             onFieldSubmitted: (str) {
               getExchangeRates(
                   scaffoldKey: globalKey,

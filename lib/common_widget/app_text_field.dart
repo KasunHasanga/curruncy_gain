@@ -72,32 +72,40 @@ class AppTextField extends StatelessWidget {
       style: AppFonts.styleWithGilroyRegularText(
           fSize: FontSizeValue.fontSize16, color: textColor ?? Theme.of(context).colorScheme.onBackground),
       decoration: InputDecoration(
-        // filled: true,
-        // fillColor: Theme.of(context).colorScheme.onBackground,
-          counterText: '',
+        filled: true,
+          suffixIconConstraints: const BoxConstraints(
+              minHeight: 24,
+              minWidth: 40
+          ),
           suffixIcon: suffixIcon,
+        fillColor: Theme.of(context).colorScheme.onBackground.withOpacity(0.1),
+          counterText: '',
+
           errorText: errorText,
           errorStyle: AppFonts.styleWithGilroyMediumText(
               color: AppColors.kRed, fSize: FontSizeValue.fontSize14),
           hintText: labelText,
+          labelStyle: AppFonts.styleWithGilroyMediumText(
+              color: Theme.of(context).colorScheme.onBackground,
+              fSize: FontSizeValue.fontSize16),
           hintStyle: TextStyle(color: labelColor),
           errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: AppColors.kRed)),
+              borderSide:  BorderSide(color: Theme.of(context).colorScheme.onBackground.withOpacity(0.1),)),
           focusedErrorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: AppColors.kRed)),
+              borderSide:  BorderSide(color: Theme.of(context).colorScheme.onBackground.withOpacity(0.1),)),
           enabledBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: AppColors.kBorderColor),
+              borderSide:  BorderSide(color: Theme.of(context).colorScheme.onBackground.withOpacity(0.1),),
               borderRadius: BorderRadius.circular(14)),
           disabledBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: AppColors.kBorderColor),
+              borderSide:  BorderSide(color: Theme.of(context).colorScheme.onBackground.withOpacity(0.1),),
               borderRadius: BorderRadius.circular(14)),
           focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide:  BorderSide(color: AppColors.kLightGreen)),
+              borderSide:  BorderSide(color: Theme.of(context).colorScheme.onBackground.withOpacity(0.1),)),
           border: OutlineInputBorder(
-              borderSide: const BorderSide(color: AppColors.kBorderColor),
+              borderSide:  BorderSide(color: Theme.of(context).colorScheme.onBackground.withOpacity(0.1),),
               borderRadius: BorderRadius.circular(14))),
     );
   }
