@@ -1,6 +1,7 @@
 import 'dart:convert';
 
-import 'package:currency_grain/config/colors.dart';
+import 'package:currency_grain/common_widget/drawer_widget.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,7 +10,6 @@ import 'package:dio/dio.dart';
 import '../../../../common_widget/app_text_field.dart';
 import '../../../../config/constants.dart';
 import '../../../../config/fonts.dart';
-import '../../../../config/theme/theme_service.dart';
 import '../../../../core/network/client.dart';
 import '../../../currency_selection/presentation/pages/currency_selection_page.dart';
 import '../../model/contry_model.dart';
@@ -35,21 +35,10 @@ class _DashboardPageState extends State<DashboardPage> {
   ExchangeRateResponseModel exchangeRateResponse =
       ExchangeRateResponseModel(info: Info(rate: 0.0));
 
-  // Map<String, String> currency01 = {
-  //   "countryCode": "USD",
-  //   "countryName": "United States Dollar"
-  // };
-  // Map<String, String> currency02 = {
-  //   "countryCode": "LKR",
-  //   "countryName": "Sri Lankan Rupee"
-  // };
 
   Country currency01 = countryList[10];
   Country currency02 = countryList[5];
-  // Map<String, String> currency02 = {
-  //   "countryCode": "LKR",
-  //   "countryName": "Sri Lankan Rupee"
-  // };
+
 
   @override
   void dispose() {
@@ -69,12 +58,7 @@ class _DashboardPageState extends State<DashboardPage> {
     super.initState();
   }
 
-  // Map<String, String> headers = <String, String>{
-  //   "apikey": "I4Q3VVqJsLla3FcY9GsSZ1cm5K2e3Qlb"
-  //   // 'Content-Type': 'application/json',
-  //   // 'Accept': 'application/json',
-  //   // 'Authorization': 'Bearer $token'
-  // };
+
   void getExchangeRates(
       {required GlobalKey<ScaffoldState> scaffoldKey,
       required TextEditingController secondaryController,
@@ -130,53 +114,7 @@ class _DashboardPageState extends State<DashboardPage> {
         ),
       ),
 
-      drawer: Drawer(
-        backgroundColor: Theme.of(context).colorScheme.background,
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(gradient: AppColors.appbarGradient),
-              child: Text(
-                'kasun Hasanga',
-                style: AppFonts.styleWithGilroyMediumText(
-                    color: Theme.of(context).colorScheme.onBackground,
-                    fSize: FontSizeValue.fontSize28),
-              ),
-            ),
-            ListTile(
-              title: Text(
-                'Portfolio',
-                style: AppFonts.styleWithGilroyMediumText(
-                    color: Theme.of(context).colorScheme.onBackground,
-                    fSize: FontSizeValue.fontSize16),
-              ),
-              onTap: () {
-                // Update the state of the app.
-                // ...
-              },
-            ),
-            Obx(
-              () => ListTile(
-                title: Text(
-                  'Dark Theme',
-                  style: AppFonts.styleWithGilroyMediumText(
-                      color: Theme.of(context).colorScheme.onBackground,
-                      fSize: FontSizeValue.fontSize16),
-                ),
-                trailing: CupertinoSwitch(
-                  onChanged: (value) {
-                    dashboardController.isLightModeSelected.value = !value;
-                    ThemeService().switchTheme(value);
-                    dashboardController.isAuto.value = false;
-                  },
-                  value: !dashboardController.isLightModeSelected.value,
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
+      drawer: DrawerWidget(dashboardController: dashboardController,),
       body: Container(
         margin: const EdgeInsets.only(top: 20),
         padding: const EdgeInsets.all(20),
@@ -200,27 +138,11 @@ class _DashboardPageState extends State<DashboardPage> {
                 isoCode: currency02.isoCode!,
                 primaryTextEditingController: currencyConverterController02,
                 secondaryTextEditingController: currencyConverterController01),
+
             const SizedBox(
               height: 32,
             ),
-            Text(
-              "Indicative Exchange Rate",
-              style: AppFonts.styleWithGilroyMediumText(
-                  color: Theme.of(context).colorScheme.onBackground,
-                  fSize: FontSizeValue.fontSize16),
-            ),
-            const SizedBox(
-              height: 12,
-            ),
-            // Text(
-            //   "1 ${currency01["countryCode"]!} = ${exchangeRateResponse.info!.rate?.toStringAsFixed(2) ?? ""} ${currency02["countryCode"]!}",
-            //   style: AppFonts.styleWithGilroyMediumText(
-            //       color: Theme.of(context)
-            //           .colorScheme
-            //           .onBackground
-            //           .withOpacity(0.7),
-            //       fSize: FontSizeValue.fontSize16),
-            // ),
+
           ],
         ),
       ),
@@ -260,7 +182,6 @@ class _DashboardPageState extends State<DashboardPage> {
               onTap: () async {
                 var result =
                     await Get.toNamed(CurrencySelectionPage.routeName) ?? "";
-                print(result.toString() + isFirstBlock.toString());
                 if (result != "") {
                   if (isFirstBlock) {
                     setState(() {
@@ -276,7 +197,7 @@ class _DashboardPageState extends State<DashboardPage> {
               child: Container(
                 width: 130,
                 height: 50,
-                padding: EdgeInsets.only(right: 10),
+                padding: const EdgeInsets.only(right: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
