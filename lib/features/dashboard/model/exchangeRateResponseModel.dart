@@ -17,24 +17,24 @@ class ExchangeRateResponseModel {
     ExchangeRateResponseModel.fromJson(Map<String, dynamic> json) {
         date = json['date'];
         historical = json['historical'];
-        info = json['info'] != null ? new Info.fromJson(json['info']) : null;
-        query = json['query'] != null ? new Query.fromJson(json['query']) : null;
+        info = json['info'] != null ? Info.fromJson(json['info']) : null;
+        query = json['query'] != null ? Query.fromJson(json['query']) : null;
         result = json['result'];
         success = json['success'];
     }
 
     Map<String, dynamic> toJson() {
-        final Map<String, dynamic> data = new Map<String, dynamic>();
-        data['date'] = this.date;
-        data['historical'] = this.historical;
-        if (this.info != null) {
-            data['info'] = this.info!.toJson();
+        final Map<String, dynamic> data = <String, dynamic>{};
+        data['date'] = date;
+        data['historical'] = historical;
+        if (info != null) {
+            data['info'] = info!.toJson();
         }
-        if (this.query != null) {
-            data['query'] = this.query!.toJson();
+        if (query != null) {
+            data['query'] = query!.toJson();
         }
-        data['result'] = this.result;
-        data['success'] = this.success;
+        data['result'] = result;
+        data['success'] = success;
         return data;
     }
 }
@@ -51,9 +51,9 @@ class Info {
     }
 
     Map<String, dynamic> toJson() {
-        final Map<String, dynamic> data = new Map<String, dynamic>();
-        data['rate'] = this.rate;
-        data['timestamp'] = this.timestamp;
+        final Map<String, dynamic> data = <String, dynamic>{};
+        data['rate'] = rate;
+        data['timestamp'] = timestamp;
         return data;
     }
 }
@@ -72,10 +72,10 @@ class Query {
     }
 
     Map<String, dynamic> toJson() {
-        final Map<String, dynamic> data = new Map<String, dynamic>();
-        data['amount'] = this.amount;
-        data['from'] = this.from;
-        data['to'] = this.to;
+        final Map<String, dynamic> data = <String, dynamic>{};
+        data['amount'] = amount;
+        data['from'] = from;
+        data['to'] = to;
         return data;
     }
 }

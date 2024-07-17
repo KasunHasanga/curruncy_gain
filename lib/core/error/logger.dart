@@ -12,5 +12,5 @@ enum Logger {
   const Logger(this.code);
 
   void log(dynamic text) =>
-      print('\x1B[' + code+ 'm' + text.toString() + '\x1B[0m');
+      print('\x1B[${code}m$text\x1B[0m');
 }

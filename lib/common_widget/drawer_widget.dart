@@ -32,7 +32,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
         padding: EdgeInsets.zero,
         children: [
           DrawerHeader(
-            decoration: BoxDecoration(gradient: AppColors.appbarGradient),
+            decoration: const BoxDecoration(gradient: AppColors.appbarGradient),
             child: Text(
               'kasun Hasanga',
               style: AppFonts.styleWithGilroyMediumText(

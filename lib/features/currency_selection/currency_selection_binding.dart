@@ -1,5 +1,4 @@
 import 'package:currency_grain/features/currency_selection/presentation/controller/currency_selection_ontroller.dart';
-import 'package:currency_grain/features/dashboard/presentation/controller/dashboard_controller.dart';
 import 'package:get/get.dart';
 
 class CurrencySelectionBinding extends Bindings {

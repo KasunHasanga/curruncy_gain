@@ -57,7 +57,6 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   void initState() {
-    print(dotenv.env['apikey']);
     if (Get.isRegistered<DashboardController>()) {
       dashboardController = Get.find();
     } else {

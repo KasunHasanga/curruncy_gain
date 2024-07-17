@@ -1,11 +1,10 @@
 
 
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../../config/constants.dart';
 import '../../../../../config/fonts.dart';
-// import 'package:flutter_svg/flutter_svg.dart';
 
 Future noNetWorkBottomSheetV2({
   required BuildContext context,
@@ -70,8 +69,8 @@ Future noNetWorkBottomSheetV2({
 PersistentBottomSheetController? controller;
 
 void noNetWorkBottomSheetOpen(GlobalKey<ScaffoldState> scaffoldKey, {ValueSetter<bool>? callback, String? title, String? description}) {
-  if(title==null){title='no_network_t'.tr;}
-  if(description==null){description='no_network_d'.tr;}
+  title ??= 'no_network_t'.tr;
+  description ??= 'no_network_d'.tr;
   controller =
       scaffoldKey.currentState!.showBottomSheet<Null>(
           backgroundColor: Colors.transparent,

@@ -27,14 +27,14 @@ class Routers {
     //Dashboard
     GetPage(
         name: DashboardPage.routeName,
-        page: () => DashboardPage(),
+        page: () => const DashboardPage(),
         bindings: [DashboardBinding()]),
 
 
     //CurrencySelection
     GetPage(
         name: CurrencySelectionPage.routeName,
-        page: () => CurrencySelectionPage(),
+        page: () => const CurrencySelectionPage(),
         bindings: [CurrencySelectionBinding()]),
 
 
