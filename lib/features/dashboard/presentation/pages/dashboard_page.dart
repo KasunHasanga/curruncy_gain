@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:currency_grain/common_widget/drawer_widget.dart';
+import 'package:currency_grain/config/colors.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -63,7 +64,7 @@ class _DashboardPageState extends State<DashboardPage> {
       {required GlobalKey<ScaffoldState> scaffoldKey,
       required TextEditingController secondaryController,
       required double amount}) async {
-    print('q111111111');
+
     // Future<Map<String, dynamic>>
     try {
       String fromCurrency = currency01.currencyCode!;
@@ -92,9 +93,6 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () => getExchangeRates(scaffoldKey: globalKey),
-      // ),
       appBar: AppBar(
         iconTheme: IconThemeData(
           color: Theme.of(context).colorScheme.onBackground,
@@ -122,6 +120,18 @@ class _DashboardPageState extends State<DashboardPage> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text(
+               "INSERT AMOUNT :",
+              style: AppFonts.styleWithGilroyMediumText(
+                  color:
+                  Theme.of(context).colorScheme.onBackground.withOpacity(0.5),
+                  fSize: FontSizeValue.fontSize14,
+                  fontWeight: FontWeight.w400),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+
             currencyInputBlock(
                 countryCode: currency01.iso3Code!,
                 isoCode: currency01.isoCode!,
@@ -131,6 +141,17 @@ class _DashboardPageState extends State<DashboardPage> {
                 secondaryTextEditingController: currencyConverterController02),
             const SizedBox(
               height: 20,
+            ),
+            Text(
+              "CONVERT TO :",
+              style: AppFonts.styleWithGilroyMediumText(
+                  color:
+                  Theme.of(context).colorScheme.onBackground.withOpacity(0.5),
+                  fSize: FontSizeValue.fontSize14,
+                  fontWeight: FontWeight.w400),
+            ),
+            const SizedBox(
+              height: 10,
             ),
             currencyInputBlock(
                 countryCode: currency02.iso3Code!,
@@ -142,7 +163,17 @@ class _DashboardPageState extends State<DashboardPage> {
             const SizedBox(
               height: 32,
             ),
-
+            Center(
+              child: ElevatedButton.icon(
+              style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(AppColors.kLightGreen.withOpacity(0.4))) ,
+                        onPressed: null, icon: Icon(Icons.add, color: AppColors.kLightGreen), label:    Text(
+                        "ADD CONVERTER",
+                        style: AppFonts.styleWithGilroyMediumText(
+                color: AppColors.kLightGreen,
+                fSize: FontSizeValue.fontSize16,
+                fontWeight: FontWeight.w400),
+                      ),),
+            )
           ],
         ),
       ),
@@ -165,17 +196,7 @@ class _DashboardPageState extends State<DashboardPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            isFirstBlock ? "INSERT AMOUNT :" : "CONVERT TO :",
-            style: AppFonts.styleWithGilroyMediumText(
-                color:
-                    Theme.of(context).colorScheme.onBackground.withOpacity(0.5),
-                fSize: FontSizeValue.fontSize14,
-                fontWeight: FontWeight.w400),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
+
           AppTextField(
             suffixIcon: GestureDetector(
               // behavior: HitTestBehavior.opaque,
