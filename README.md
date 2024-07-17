@@ -1,10 +1,12 @@
-
-
 # currency_grain
 
 Get Data From
 
 https://apilayer.com/marketplace/exchangerates_data-api?live_demo=show
+
+Create a  `.env`  file in the root of your project with the following example content:
+
+    apikey=API_KEY_GET_FROM_LAST_STEP
 
 ## Features
 
@@ -55,10 +57,3 @@ We welcome contributions to enhance this starter project. If you have suggestion
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ---
-
-
-
-
-
-
-
