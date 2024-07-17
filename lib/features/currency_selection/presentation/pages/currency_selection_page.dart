@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import '../../../../config/constants.dart';
 import '../../../../config/fonts.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../dashboard/model/contry_model.dart';
 
 class CurrencySelectionPage extends StatefulWidget {
   static const routeName = '/currency_selection_page';
-  CurrencySelectionPage({Key? key}) : super(key: key);
+  const CurrencySelectionPage({super.key});
 
   @override
   State<CurrencySelectionPage> createState() => _DashboardPageState();
@@ -16,6 +17,13 @@ class CurrencySelectionPage extends StatefulWidget {
 class _DashboardPageState extends State<CurrencySelectionPage> {
   List<Country> filteredCountryList = List.from(countryList);
   TextEditingController searchController = TextEditingController();
+  Set<int> selectedItems = Set<int>();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSelectedItems();
+  }
 
   void filterSearchResults(String query) {
     List<Country> dummySearchList = [];
@@ -38,6 +46,22 @@ class _DashboardPageState extends State<CurrencySelectionPage> {
         filteredCountryList.addAll(countryList);
       });
     }
+  }
+
+  Future<void> _loadSelectedItems() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? savedItems = prefs.getStringList('selectedItems');
+    if (savedItems != null) {
+      setState(() {
+        selectedItems = savedItems.map((e) => int.parse(e)).toSet();
+      });
+    }
+  }
+
+  Future<void> _saveSelectedItems() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> itemsToSave = selectedItems.map((e) => e.toString()).toList();
+    await prefs.setStringList('selectedItems', itemsToSave);
   }
 
   @override
@@ -73,20 +97,21 @@ class _DashboardPageState extends State<CurrencySelectionPage> {
                 controller: searchController,
                 style: AppFonts.styleWithGilroyMediumText(
                     color: Theme.of(context).colorScheme.onBackground,
-                    fSize: FontSizeValue.fontSize16) ,
+                    fSize: FontSizeValue.fontSize16),
                 onChanged: filterSearchResults,
                 decoration: InputDecoration(
-
-                  hintStyle:AppFonts.styleWithGilroyMediumText(
+                  hintStyle: AppFonts.styleWithGilroyMediumText(
                       color: Theme.of(context).colorScheme.onBackground,
-                      fSize: FontSizeValue.fontSize16) ,
+                      fSize: FontSizeValue.fontSize16),
                   labelStyle: AppFonts.styleWithGilroyMediumText(
                       color: Theme.of(context).colorScheme.onBackground,
-                      fSize: FontSizeValue.fontSize16) ,
-
+                      fSize: FontSizeValue.fontSize16),
                   labelText: "Search",
                   hintText: "Search Currency",
-                  prefixIcon: Icon(Icons.search,color: Theme.of(context).colorScheme.onBackground,),
+                  prefixIcon: Icon(
+                    Icons.search,
+                    color: Theme.of(context).colorScheme.onBackground,
+                  ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(25.0)),
                   ),
@@ -98,16 +123,16 @@ class _DashboardPageState extends State<CurrencySelectionPage> {
                 itemCount: filteredCountryList.length,
                 separatorBuilder: (context, index) {
                   return Divider(
-                    color:
-                        Theme.of(context).colorScheme.onBackground.withOpacity(0.1),
+                    color: Theme.of(context).colorScheme.onBackground.withOpacity(0.1),
                     endIndent: 30,
                     indent: 20,
                   );
                 },
                 itemBuilder: (context, index) {
-                  // String countryCode = currencyList.keys.elementAt(index);
                   String countryCode = filteredCountryList[index].iso3Code!;
                   String countryName = filteredCountryList[index].name!;
+                  bool isSelected = selectedItems.contains(index);
+
                   return ListTile(
                     onTap: () {
                       Get.back(result: filteredCountryList[index]);
@@ -136,16 +161,20 @@ class _DashboardPageState extends State<CurrencySelectionPage> {
                       ],
                     ),
                     trailing: IconButton(
-                      icon: index > 5
-                          ? Icon(
-                              Icons.star_outline,
-                              color: Theme.of(context).colorScheme.primary,
-                            )
-                          : Icon(
-                              Icons.star,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                      onPressed: () {},
+                      icon: Icon(
+                        isSelected ? Icons.star : Icons.star_outline,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          if (isSelected) {
+                            selectedItems.remove(index);
+                          } else {
+                            selectedItems.add(index);
+                          }
+                          _saveSelectedItems();
+                        });
+                      },
                     ),
                   );
                 },

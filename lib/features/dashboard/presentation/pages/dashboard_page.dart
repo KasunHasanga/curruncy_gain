@@ -19,7 +19,7 @@ import '../controller/dashboard_controller.dart';
 
 class DashboardPage extends StatefulWidget {
   static const routeName = '/dashboard';
-  DashboardPage({Key? key}) : super(key: key);
+  const DashboardPage({super.key});
 
   @override
   State<DashboardPage> createState() => _DashboardPageState();
@@ -36,10 +36,8 @@ class _DashboardPageState extends State<DashboardPage> {
   ExchangeRateResponseModel exchangeRateResponse =
       ExchangeRateResponseModel(info: Info(rate: 0.0));
 
-
   Country currency01 = countryList[10];
   Country currency02 = countryList[5];
-
 
   @override
   void dispose() {
@@ -59,21 +57,16 @@ class _DashboardPageState extends State<DashboardPage> {
     super.initState();
   }
 
-
   void getExchangeRates(
       {required GlobalKey<ScaffoldState> scaffoldKey,
       required TextEditingController secondaryController,
       required double amount}) async {
-
-    // Future<Map<String, dynamic>>
     try {
       String fromCurrency = currency01.currencyCode!;
       String toCurrency = currency02.currencyCode!;
-      // double amount = 100;
       String baseUrl = "https://api.apilayer.com/exchangerates_data/convert";
       var response = await client.get(
           "$baseUrl?to=$toCurrency&from=$fromCurrency&amount=$amount",
-          // I4Q3VVqJsLla3FcY9GsSZ1cm5K2e3Qlb
           query: {"apikey": "I4Q3VVqJsLla3FcY9GsSZ1cm5K2e3Qlb"},
           scaffoldKey: scaffoldKey);
       exchangeRateResponse =
@@ -111,8 +104,9 @@ class _DashboardPageState extends State<DashboardPage> {
               fSize: FontSizeValue.fontSize16),
         ),
       ),
-
-      drawer: DrawerWidget(dashboardController: dashboardController,),
+      drawer: DrawerWidget(
+        dashboardController: dashboardController,
+      ),
       body: Container(
         margin: const EdgeInsets.only(top: 20),
         padding: const EdgeInsets.all(20),
@@ -121,17 +115,18 @@ class _DashboardPageState extends State<DashboardPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-               "INSERT AMOUNT :",
+              "INSERT AMOUNT :",
               style: AppFonts.styleWithGilroyMediumText(
-                  color:
-                  Theme.of(context).colorScheme.onBackground.withOpacity(0.5),
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onBackground
+                      .withOpacity(0.5),
                   fSize: FontSizeValue.fontSize14,
                   fontWeight: FontWeight.w400),
             ),
             const SizedBox(
               height: 10,
             ),
-
             currencyInputBlock(
                 countryCode: currency01.iso3Code!,
                 isoCode: currency01.isoCode!,
@@ -145,8 +140,10 @@ class _DashboardPageState extends State<DashboardPage> {
             Text(
               "CONVERT TO :",
               style: AppFonts.styleWithGilroyMediumText(
-                  color:
-                  Theme.of(context).colorScheme.onBackground.withOpacity(0.5),
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onBackground
+                      .withOpacity(0.5),
                   fSize: FontSizeValue.fontSize14,
                   fontWeight: FontWeight.w400),
             ),
@@ -159,20 +156,26 @@ class _DashboardPageState extends State<DashboardPage> {
                 isoCode: currency02.isoCode!,
                 primaryTextEditingController: currencyConverterController02,
                 secondaryTextEditingController: currencyConverterController01),
-
             const SizedBox(
               height: 32,
             ),
             Center(
               child: ElevatedButton.icon(
-              style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(AppColors.kLightGreen.withOpacity(0.4))) ,
-                        onPressed: null, icon: Icon(Icons.add, color: AppColors.kLightGreen), label:    Text(
-                        "ADD CONVERTER",
-                        style: AppFonts.styleWithGilroyMediumText(
-                color: AppColors.kLightGreen,
-                fSize: FontSizeValue.fontSize16,
-                fontWeight: FontWeight.w400),
-                      ),),
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                        AppColors.kLightGreen.withOpacity(0.4))),
+                onPressed: (){
+
+                },
+                icon: Icon(Icons.add, color: AppColors.kLightGreen),
+                label: Text(
+                  "ADD CONVERTER",
+                  style: AppFonts.styleWithGilroyMediumText(
+                      color: AppColors.kLightGreen,
+                      fSize: FontSizeValue.fontSize16,
+                      fontWeight: FontWeight.w400),
+                ),
+              ),
             )
           ],
         ),
@@ -196,7 +199,6 @@ class _DashboardPageState extends State<DashboardPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           AppTextField(
             suffixIcon: GestureDetector(
               // behavior: HitTestBehavior.opaque,
