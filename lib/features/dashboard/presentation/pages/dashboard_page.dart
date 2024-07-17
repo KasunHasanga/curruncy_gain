@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:currency_grain/config/colors.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +11,7 @@ import '../../../../common_widget/app_text_field.dart';
 import '../../../../config/bank_images.dart';
 import '../../../../config/constants.dart';
 import '../../../../config/fonts.dart';
+import '../../../../config/theme/theme_service.dart';
 import '../../../../core/network/client.dart';
 import '../../../currency_selection/presentation/pages/currency_selection_page.dart';
 import '../../model/exchangeRateResponseModel.dart';
@@ -34,8 +36,14 @@ class _DashboardPageState extends State<DashboardPage> {
   ExchangeRateResponseModel exchangeRateResponse =
       ExchangeRateResponseModel(info: Info(rate: 0.0));
 
-  Map<String, String> currency01={"countryCode": "USD", "countryName": "United States Dollar"};
-  Map<String, String> currency02={"countryCode": "LKR", "countryName": "Sri Lankan Rupee"};
+  Map<String, String> currency01 = {
+    "countryCode": "USD",
+    "countryName": "United States Dollar"
+  };
+  Map<String, String> currency02 = {
+    "countryCode": "LKR",
+    "countryName": "Sri Lankan Rupee"
+  };
 
   @override
   void dispose() {
@@ -80,7 +88,8 @@ class _DashboardPageState extends State<DashboardPage> {
       exchangeRateResponse =
           ExchangeRateResponseModel.fromJson(jsonDecode(response.toString()));
       setState(() {
-        secondaryController.text = exchangeRateResponse.result?.toStringAsFixed(2)??"";
+        secondaryController.text =
+            exchangeRateResponse.result?.toStringAsFixed(2) ?? "";
       });
       print(response);
     } on DioException catch (ex) {
@@ -98,50 +107,68 @@ class _DashboardPageState extends State<DashboardPage> {
       // ),
       appBar: AppBar(
         flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: AppColors.appbarGradient,
+          decoration:  BoxDecoration(
+       color: Theme.of(context).colorScheme.background,
           ),
         ),
         centerTitle: true,
         elevation: 0.0,
         title: Text(
-          "Currency Grain",
+          "Advanced Exchanger",
           style: AppFonts.styleWithGilroyMediumText(
               color: Theme.of(context).colorScheme.onBackground,
               fSize: FontSizeValue.fontSize16),
         ),
       ),
-      // drawer: Drawer(
-      //   // Add a ListView to the drawer. This ensures the user can scroll
-      //   // through the options in the drawer if there isn't enough vertical
-      //   // space to fit everything.
-      //   child: ListView(
-      //     // Important: Remove any padding from the ListView.
-      //     padding: EdgeInsets.zero,
-      //     children: [
-      //       const DrawerHeader(
-      //         decoration: BoxDecoration(
-      //           color: Colors.blue,
-      //         ),
-      //         child: Text('Drawer Header'),
-      //       ),
-      //       ListTile(
-      //         title: const Text('Item 1'),
-      //         onTap: () {
-      //           // Update the state of the app.
-      //           // ...
-      //         },
-      //       ),
-      //       ListTile(
-      //         title: const Text('Item 2'),
-      //         onTap: () {
-      //           // Update the state of the app.
-      //           // ...
-      //         },
-      //       ),
-      //     ],
-      //   ),
-      // ),
+
+      drawer: Drawer(
+        backgroundColor: Theme.of(context).colorScheme.background,
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                   gradient: AppColors.appbarGradient),
+              child: Text(
+                'kasun Hasanga',
+                style: AppFonts.styleWithGilroyMediumText(
+                    color: Theme.of(context).colorScheme.onBackground,
+                    fSize: FontSizeValue.fontSize28),
+              ),
+            ),
+            ListTile(
+              title: Text(
+                'Portfolio',
+                style: AppFonts.styleWithGilroyMediumText(
+                    color: Theme.of(context).colorScheme.onBackground,
+                    fSize: FontSizeValue.fontSize16),
+              ),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+              },
+            ),
+            Obx(
+              () => ListTile(
+                title: Text(
+                  'Dark Theme',
+                  style: AppFonts.styleWithGilroyMediumText(
+                      color: Theme.of(context).colorScheme.onBackground,
+                      fSize: FontSizeValue.fontSize16),
+                ),
+                trailing: CupertinoSwitch(
+                  onChanged: (value) {
+                    dashboardController.isLightModeSelected.value = !value;
+                    ThemeService().switchTheme(value);
+                    dashboardController.isAuto.value = false;
+                  },
+                  value: !dashboardController.isLightModeSelected.value,
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
       body: Container(
         margin: const EdgeInsets.only(top: 20),
         padding: const EdgeInsets.all(20),
@@ -152,24 +179,21 @@ class _DashboardPageState extends State<DashboardPage> {
             currencyInputBlock(
                 countryCode: currency01["countryCode"]!,
                 countryName: currency01["countryName"]!,
-
-                primaryTextEditingController: currencyConverterController01,isFirstBlock: true,
+                primaryTextEditingController: currencyConverterController01,
+                isFirstBlock: true,
                 secondaryTextEditingController: currencyConverterController02),
-
             Center(
               child: Padding(
-                padding: const EdgeInsets.only(top: 10,bottom: 10),
+                padding: const EdgeInsets.only(top: 10, bottom: 10),
                 child: SizedBox(
                   width: 44,
                   height: 44,
                   child: Image(
-                    image: AssetImage( AllImages().currencyExchangeImg),
+                    image: AssetImage(AllImages().currencyExchangeImg),
                   ),
                 ),
               ),
             ),
-
-
             currencyInputBlock(
                 countryCode: currency02["countryCode"]!,
                 countryName: currency02["countryName"]!,
@@ -180,18 +204,18 @@ class _DashboardPageState extends State<DashboardPage> {
             ),
             Text(
               "Indicative Exchange Rate",
-              style: AppFonts.styleWithGilroyMediumText(
-                  color: AppColors.kGray,
-                  fSize: FontSizeValue.fontSize16,
-                  fontWeight: FontWeight.w400),
+              style:  AppFonts.styleWithGilroyMediumText(
+                  color: Theme.of(context).colorScheme.onBackground,
+                  fSize: FontSizeValue.fontSize16),
             ),
-            const SizedBox(height: 12,),
+            const SizedBox(
+              height: 12,
+            ),
             Text(
               "1 ${currency01["countryCode"]!} = ${exchangeRateResponse.info!.rate?.toStringAsFixed(2) ?? ""} ${currency02["countryCode"]!}",
-              style: AppFonts.styleWithGilroyMediumText(
-                  color: AppColors.kBlack,
-                  fSize: FontSizeValue.fontSize16,
-                  fontWeight: FontWeight.w400),
+              style:  AppFonts.styleWithGilroyMediumText(
+                  color: Theme.of(context).colorScheme.onBackground.withOpacity(0.7),
+                  fSize: FontSizeValue.fontSize16),
             ),
           ],
         ),
@@ -202,29 +226,31 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget currencyInputBlock({
     required String countryName,
     required countryCode,
-    bool isFirstBlock=false,
+    bool isFirstBlock = false,
     required TextEditingController primaryTextEditingController,
     required TextEditingController secondaryTextEditingController,
   }) {
     return Container(
-      decoration: const BoxDecoration(
-          color: AppColors.kWhite,
+      decoration:  BoxDecoration(
+          color: Theme.of(context).colorScheme.background,
           borderRadius: BorderRadius.all(Radius.circular(10))),
       padding: const EdgeInsets.fromLTRB(13, 17, 13, 18),
       child: Column(
         children: [
           GestureDetector(
+            behavior: HitTestBehavior.opaque,
             onTap: () async {
-              var result = await Get.toNamed(CurrencySelectionPage.routeName)??"";
-          print(result);
-              if(result!=""){
-                if(isFirstBlock){
+              var result =
+                  await Get.toNamed(CurrencySelectionPage.routeName) ?? "";
+              print(result);
+              if (result != "") {
+                if (isFirstBlock) {
                   setState(() {
-                    currency01=result;
+                    currency01 = result;
                   });
-                }else{
+                } else {
                   setState(() {
-                    currency02=result;
+                    currency02 = result;
                   });
                 }
               }
@@ -235,22 +261,23 @@ class _DashboardPageState extends State<DashboardPage> {
                 Text(
                   countryName,
                   style: AppFonts.styleWithGilroyMediumText(
-                      color: AppColors.kBlack,
+                      color:Theme.of(context).colorScheme.onBackground,
                       fSize: FontSizeValue.fontSize16,
                       fontWeight: FontWeight.w400),
                 ),
-                const Icon(
+                 Icon(
                   Icons.arrow_right_sharp,
-                  color: AppColors.kBlack,
+                  color: Theme.of(context).colorScheme.onBackground,
                 )
               ],
             ),
           ),
+          const SizedBox(height: 10,),
           AppTextField(
             textController: primaryTextEditingController,
             labelText: ''.tr,
-            labelColor: AppColors.kBlack,
-            textColor: AppColors.kBlack,
+            labelColor:  Theme.of(context).colorScheme.onBackground,
+            textColor:  Theme.of(context).colorScheme.onBackground,
             inputFormatter: FilteringTextInputFormatter.digitsOnly,
             keyBoardType: TextInputType.number,
 
