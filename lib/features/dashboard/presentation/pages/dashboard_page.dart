@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:currency_grain/common_widget/drawer_widget.dart';
 import 'package:currency_grain/config/colors.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -56,6 +57,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   void initState() {
+    print(dotenv.env['apikey']);
     if (Get.isRegistered<DashboardController>()) {
       dashboardController = Get.find();
     } else {
@@ -78,7 +80,7 @@ class _DashboardPageState extends State<DashboardPage> {
       String baseUrl = "https://api.apilayer.com/exchangerates_data/convert";
       var response = await client.get(
           "$baseUrl?to=$toCurrency&from=$fromCurrency&amount=$amount",
-          query: {"apikey": "I4Q3VVqJsLla3FcY9GsSZ1cm5K2e3Qlb"},
+          query: {"apikey": dotenv.env['apikey']},
           scaffoldKey: scaffoldKey);
       var exchangeRateResponse =
           ExchangeRateResponseModel.fromJson(jsonDecode(response.toString()));
