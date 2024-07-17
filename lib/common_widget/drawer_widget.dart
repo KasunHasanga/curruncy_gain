@@ -1,5 +1,3 @@
-
-
 import 'package:currency_grain/features/dashboard/presentation/controller/dashboard_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,9 +6,10 @@ import '../config/colors.dart';
 import '../config/constants.dart';
 import '../config/fonts.dart';
 import '../config/theme/theme_service.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DrawerWidget extends StatefulWidget {
-  const DrawerWidget({super.key,required this.dashboardController});
+  const DrawerWidget({super.key, required this.dashboardController});
 
   final DashboardController dashboardController;
   @override
@@ -18,6 +17,13 @@ class DrawerWidget extends StatefulWidget {
 }
 
 class _DrawerWidgetState extends State<DrawerWidget> {
+  final Uri _url = Uri.parse('https://www.linkedin.com/in/kasun-hasanga/');
+  Future<void> _launchUrl() async {
+    if (!await launchUrl(_url)) {
+      throw Exception('Could not launch $_url');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -36,18 +42,17 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           ),
           ListTile(
             title: Text(
-              'Portfolio',
+              'Linkdin',
               style: AppFonts.styleWithGilroyMediumText(
                   color: Theme.of(context).colorScheme.onBackground,
                   fSize: FontSizeValue.fontSize16),
             ),
             onTap: () {
-              // Update the state of the app.
-              // ...
+              _launchUrl();
             },
           ),
           Obx(
-                () => ListTile(
+            () => ListTile(
               title: Text(
                 'Dark Theme',
                 style: AppFonts.styleWithGilroyMediumText(
