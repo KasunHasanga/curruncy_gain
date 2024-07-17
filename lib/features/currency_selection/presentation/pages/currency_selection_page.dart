@@ -17,7 +17,7 @@ class CurrencySelectionPage extends StatefulWidget {
 class _DashboardPageState extends State<CurrencySelectionPage> {
   List<Country> filteredCountryList = List.from(countryList);
   TextEditingController searchController = TextEditingController();
-  Set<int> selectedItems = Set<int>();
+  Set<int> selectedItems = <int>{};
 
   @override
   void initState() {
@@ -30,11 +30,11 @@ class _DashboardPageState extends State<CurrencySelectionPage> {
     dummySearchList.addAll(countryList);
     if (query.isNotEmpty) {
       List<Country> dummyListData = [];
-      dummySearchList.forEach((item) {
+      for (var item in dummySearchList) {
         if (item.name!.toLowerCase().contains(query.toLowerCase())) {
           dummyListData.add(item);
         }
-      });
+      }
       setState(() {
         filteredCountryList.clear();
         filteredCountryList.addAll(dummyListData);
@@ -112,7 +112,7 @@ class _DashboardPageState extends State<CurrencySelectionPage> {
                     Icons.search,
                     color: Theme.of(context).colorScheme.onBackground,
                   ),
-                  border: OutlineInputBorder(
+                  border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(25.0)),
                   ),
                 ),

@@ -10,6 +10,7 @@ import 'config/theme/theme_service.dart';
 import 'config/theme/themes.dart';
 import 'features/onboarding/presentation/pages/splash.dart';
 import 'injector.dart' as di;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
   await di.init();
@@ -18,8 +19,10 @@ void main() async {
 }
 
 void mainDelegate() async {
+
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  await dotenv.load(fileName: ".env");
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((value) {
     runApp(const MyApp());

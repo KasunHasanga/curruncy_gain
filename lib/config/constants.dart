@@ -11,20 +11,10 @@ class FontSizeValue {
   static const fontSize14 = 3.75;
   static const fontSize13 = 3.45;
   static const fontSize11 = 2.88;
-
 }
+
 class DateTimeFormatType {
   static const String yearMonthDay = "yyyy-MM-dd";
-
-
-}
-
-
-class Constants {
-
-
-  static const String GOOGLE_MAPS_API_KEY = "";
-
 }
 
 class ShardPrefKey {
@@ -33,11 +23,7 @@ class ShardPrefKey {
   static const appPlatform = "APP_Platform";
   static const appUserName = "USER_NAME";
 
-
-
   static const userLoggedIn = "LOGGED_IN";
-
-
 }
 
 final List<Country> countryList = [

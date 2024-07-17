@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' as lan;
@@ -58,7 +57,9 @@ class Clinet {
   static final baseAPI = addInterceptors(dio);
 
   Future<Response?> get(String url, {Map<String, dynamic>? query = null, dynamic data = null, required GlobalKey<ScaffoldState> scaffoldKey}) async {
-   print(url);
+   if (kDebugMode) {
+     print(url);
+   }
     try {
       Response? response = await dio.get(url, queryParameters: query);
       Logger.Yellow.log("🐛 RESPONSE statusCode ${response.statusCode}");
@@ -78,7 +79,7 @@ class Clinet {
     }
   }
 
-  Future<Response?> post(String url,  {Map<String, dynamic>? query = null, dynamic data = null, required GlobalKey<ScaffoldState> scaffoldKey}) async {
+  Future<Response?> post(String url,  {Map<String, dynamic>? query, dynamic data, required GlobalKey<ScaffoldState> scaffoldKey}) async {
     try {
       Response response = await dio.post(url, queryParameters: query, data: data);
       Logger.Yellow.log("🐛 RESPONSE statusCode ${response.statusCode}");
@@ -98,7 +99,7 @@ class Clinet {
     }
   }
 
-  Future<Response?> put(String url,  {Map<String, dynamic>? query = null, dynamic data = null, required GlobalKey<ScaffoldState> scaffoldKey}) async {
+  Future<Response?> put(String url,  {Map<String, dynamic>? query, dynamic data, required GlobalKey<ScaffoldState> scaffoldKey}) async {
     try {
       Response response = await baseAPI.put(url, queryParameters: query, data: data);
       Logger.Yellow.log("🐛 RESPONSE statusCode ${response.statusCode}");
@@ -118,7 +119,7 @@ class Clinet {
     }
   }
 
-  Future<Response?> deleteHTTP(String url, {Map<String, dynamic>? query = null, dynamic data = null, required GlobalKey<ScaffoldState> scaffoldKey}) async {
+  Future<Response?> deleteHTTP(String url, {Map<String, dynamic>? query, dynamic data, required GlobalKey<ScaffoldState> scaffoldKey}) async {
     try {
       Response response = await baseAPI.delete(url, queryParameters: query, data: data);
       Logger.Yellow.log("🐛 RESPONSE statusCode ${response.statusCode}");
